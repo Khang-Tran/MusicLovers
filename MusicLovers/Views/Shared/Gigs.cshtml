@@ -1,0 +1,68 @@
+﻿@model MusicLovers.Core.ViewModel.GigsDisplayViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+<h1>@Model.Header</h1>
+@using (Html.BeginForm("Search", "Gigs"))
+{
+    <div class="form-group">
+        <div class="input-group" id="search-gig">
+            @Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control", placeholder = "Search for artist, genre or venue" })
+            <span class="input-group-addon">
+                <i class="glyphicon glyphicon-search"></i>
+            </span>
+        </div>
+
+    </div>
+}
+<ul id="gig" class="gigs voffset4">
+    @foreach (var gig in Model.DisplayingGigs)
+    {
+        <li>
+            <div class="date">
+                <div class="month">
+                    @gig.DateTime.ToString("MMM")
+                </div>
+                <div class="day">
+                    @gig.DateTime.ToString("d ")
+                </div>
+            </div>
+            <div class="details">
+                <span class="artist">
+                    @Html.ActionLink(@gig.Artist.Name, "Details", "Gigs", new { id = gig.Id }, null)
+                    @if (gig.IsCancel)
+                    {
+                        <span class="label label-warning">Canceled</span>
+                    }
+                </span>
+                <span class="genre">
+                    @gig.Genre.Name
+                </span>
+            </div>
+            @if (Model.ShowActions && !gig.IsCancel)
+            {
+                <div class="btn-inter">             
+                    <div>
+                        @{
+                            var isContainGig = Model.Attendances.Contains(gig.Id);
+                        }
+                        <button 
+                            data-gig-id="@gig.Id" class=" btn-sm btn  @(isContainGig ? "btn-info" : "btn-default") js-toggle-attendance">@(isContainGig ? "Going" : "Going?")</button>
+                    </div>
+                </div>
+            }
+
+
+        </li>
+    }
+</ul>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            AttendancesController.init("#gig");
+        });
+    </script>
+}
+

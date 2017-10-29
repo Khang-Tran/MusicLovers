@@ -1,0 +1,9 @@
+﻿@model MusicLovers.Core.ViewModel.FolloweeViewModel
+    
+<h1>Artist I'm Following</h1>
+<ul class="voffset4">
+@foreach (var followee in Model.Followees)
+{
+    <li>@followee.Name</li>
+}
+</ul>
